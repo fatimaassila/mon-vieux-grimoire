@@ -1,6 +1,16 @@
 const express = require('express');
 const app = express();
 app.use(express.json());
+const mongoose = require('mongoose');
+
+
+mongoose.connect('mongodb+srv://books:123@cluster0.ib5fx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
+  .then(() => {
+    console.log('Connexion à MongoDB réussie !');
+  })
+  .catch((error) => {
+    console.error('Connexion à MongoDB échouée !', error);
+})
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
