@@ -6,8 +6,7 @@ const bookRoutes = require('./routes/book');
 const userRoutes = require('./routes/user');
 
 
-
-mongoose.connect('mongodb+srv://books:123@cluster0.ib5fx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
+mongoose.connect('mongodb+srv://fatima:123@cluster0.ib5fx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
   .then(() => {
     console.log('Connexion à MongoDB réussie !');
   })
@@ -22,7 +21,9 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use ( '/api/books' , bookRoutes );
+
 app.use('/api/auth', userRoutes);
+app.use ( '/api/books' , bookRoutes );
+
 
 module.exports = app;
