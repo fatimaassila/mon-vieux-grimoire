@@ -7,7 +7,7 @@ const bookSchema= mongoose.Schema ({
     genre: { type: String, required: true },
     imageUrl: { type: String, required: true },
     userId: { type: String, required: true },
-    rating:[{
+    ratings:[{
         userId: { type: String, required: true },
         grade: { type: Number, required: true }
     }],
