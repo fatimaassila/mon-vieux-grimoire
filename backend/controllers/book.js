@@ -1,6 +1,7 @@
 
 const Book = require('../models/book');
 const fs = require('fs');
+const path = require('path')
 
 
 exports.createBook = (req, res, next) => {
@@ -14,7 +15,7 @@ exports.createBook = (req, res, next) => {
     });
   
     book.save()
-    .then(() => { res.status(201).json({message: 'Objet enregistré !'})})
+    .then(() => { res.status(201).json({message: 'livre enregistré !'})})
     .catch(error => { res.status(400).json( { error })})
  };
 
@@ -31,7 +32,7 @@ exports.modifyBook = (req, res, next) => {
                 res.status(401).json({ message : 'Not authorized'});
             } else {
                 Book.updateOne({ _id: req.params.id}, { ...bookObject, _id: req.params.id})
-                .then(() => res.status(200).json({message : 'Objet modifié!'}))
+                .then(() => res.status(200).json({message : 'livre modifié!'}))
                 .catch(error => res.status(401).json({ error }));
             }
         })
@@ -39,7 +40,6 @@ exports.modifyBook = (req, res, next) => {
             res.status(400).json({ error });
         });
 };
-
 
 exports.deleteBook = (req, res, next) => {
     Book.findOne({ _id: req.params.id})
@@ -50,7 +50,7 @@ exports.deleteBook = (req, res, next) => {
             const filename = book.imageUrl.split('/images/')[1];
             fs.unlink(`images/${filename}`, () => {
                 Book.deleteOne({_id: req.params.id})
-                    .then(() => { res.status(200).json({message: 'Objet supprimé !'})})
+                    .then(() => { res.status(200).json({message: 'livre supprimé !'})})
                     .catch(error => res.status(401).json({ error }));
             });
         }
@@ -71,3 +71,8 @@ exports.getAllBooks =(req, res, next) => {
    .then(books => res.status(200).json(books))
    .catch(error => res.status(400).json({ error })); 
 };
+
+// exports.getBestRating =( req , res , next) =>{
+//     // TODO: Implement this function
+
+// }
