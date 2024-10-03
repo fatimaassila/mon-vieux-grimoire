@@ -2,13 +2,11 @@ const multer = require('multer');
 const  sharp = require('sharp');
 const path = require('path');
 
-
 const MIME_TYPES = {
   'image/jpg': 'jpg',
   'image/jpeg': 'jpg',
   'image/png': 'png',
-  'image/wepb': 'wepb'
-
+  'image/webp': 'webp'
 };
 
 const storage = multer.diskStorage({
@@ -21,28 +19,28 @@ const storage = multer.diskStorage({
     callback(null, name + Date.now() + '.' + extension);
   }
 });
-
 const upload = multer({storage: storage}).single('image');
 
-// Redimensionnez les images téléchargées avant de les enregistrer dans la base de données.
+// Middleware pour redimensionner les images avant de les télécharger
 const resizeImag = (req, res, next) => {
   // vérifie si'l y a un fichier dans la requete
   if (!req.file) {
     return next();
   }
-//   // Si oui, redimensionne l'image avec Sharp.
-  const fileName = req.file.filename;
-  const filePath = req.file.path;
-  const resizedFilePath = path.join('images', `resized_${fileName}`);
+ // Si oui redimensionne l'image avec Sharp.
+  const fileName = req.file.filename; // Nom original
+  const filePath = req.file.path; // Chemin original
+  const resizedFilePath = path.join('images', `resized_${fileName}`); // Chemin de la nouvelle image 
+  // Utilisation de Sharp pour traiter l'image
   sharp(filePath)
     .resize({ width:206, height: 260 })
-    .toFormat('avif')
+    .toFormat('webp')
     .toFile(resizedFilePath)
     .then(() => {
        // On met à jour le chemin vers l'img redimensionne
-      req.file.path = resizedFilePath;
-      req.file.filename =fileName;
-        next();
+      req.file.path = resizedFilePath ;
+      req.file.filename =`resized_${fileName}` ;
+      next();
     })
     .catch(error => res.status(500).json({ error })); 
 };
