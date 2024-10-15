@@ -1,6 +1,7 @@
 const multer = require('multer');
 const  sharp = require('sharp');
 const path = require('path');
+const fs = require ('fs')
 
 const MIME_TYPES = {
   'image/jpg': 'jpg',
@@ -38,9 +39,12 @@ const resizeImag = (req, res, next) => {
     .toFile(resizedFilePath)
     .then(() => {
        // On met à jour le chemin vers l'img redimensionne
-      req.file.path = resizedFilePath ;
-      req.file.filename =`resized_${fileName}` ;
-      next();
+       fs.unlink( filePath,() => {
+        req.file.path = resizedFilePath ;
+        req.file.filename =`resized_${fileName}` ;
+        next();
+       })
+     
     })
     .catch(error => res.status(500).json({ error })); 
 };

@@ -1,7 +1,7 @@
 
 const Book = require('../models/book');
 const fs = require('fs');
-const path = require('path')
+
 
 const computeAverage = (grades) => {
     if(grades === undefined || !grades) return 0;
@@ -49,7 +49,7 @@ exports.deleteBook = (req, res, next) => {
     Book.findOne ({ _id: req.params.id})
     .then(book => {
         if (book.userId != req.auth.userId) {
-            res.status(401).json({message: 'Not authorized'});
+            res.status(403).json({message: 'Forbidden'});
         } else {
             const filename = book.imageUrl.split('/images/')[1];
             fs.unlink(`images/${filename}`, () => {
@@ -95,7 +95,6 @@ exports.ratingBook = (req , res , next ) =>{
         // Récupération du livre 
         Book.findOne({_id: bookId})
             .then((book) => {
-                console.log(book);
                 const userIdArray = book.ratings.map(rating => rating.userId);
                 // vérifier que l'utilisateur authentifié n'a jamais donné de note au livre
                 if (userIdArray.includes(userId)) {
@@ -104,11 +103,8 @@ exports.ratingBook = (req , res , next ) =>{
                     const newRatings = book.ratings;
                     // Ajout de la note
                     newRatings.push(ratingObject);
-                    console.log("newRating " +newRatings);
                     const grades = newRatings.map(r => r.grade);
-                    console.log("grades " +grades);
                     const averageGrades = computeAverage(grades);
-                    console.log("averageGrades " +averageGrades);
                     book.averageRating = averageGrades;
                     //Mise à jour du livre avec la nouvelle note ainsi que la nouvelle moyenne des notes
                     Book.updateOne(
